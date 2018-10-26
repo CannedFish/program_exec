@@ -1,0 +1,5 @@
+*.swp
+*.pyc
+*.pyw
+*.out
+*/**/go/main
