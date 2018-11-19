@@ -2,21 +2,22 @@
 import os, subprocess
 
 def main(opts, args):
-    ins = []
-    outs = []
-    with open(opts.input, 'rb') as fd:
-        for line in fd.readlines():
-            ins.append(line)
-    with open(opts.output, 'rb') as fd:
-        for line in fd.readlines():
-            outs.append(line)
-    n = len(ins)/opts.num
-    for stdin, stdout in \
-            zip(['\n'.join(ins[i:i+n]) for i in range(0, len(ins), n)], \
-            ['\n'.join(outs[i:i+n]) for i in range(0, len(outs), n)]):
+    inout = [[], []]
+    for _path, _out in zip([opts.input, opts.output], inout):
+        with open(_path, 'rb') as fd:
+            tmp = []
+            for line in fd.readlines():
+                if line == '\n':
+                    _out.append(''.join(tmp))
+                    tmp = []
+                else:
+                    tmp.append(line)
+            _out.append(''.join(tmp))
+    for stdin, stdout, idx in zip(inout[0], inout[1], range(opts.num)):
         for arg in args:
             p = subprocess.Popen(arg, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
             p_stdout = p.communicate(stdin)[0]
+            print "\n#%d" % idx
             print "exec:"
             print arg
             print "stdin:"
