@@ -3,3 +3,5 @@
 *.pyw
 *.out
 */**/go/main
+*.swo
+*/**/out
